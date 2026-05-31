@@ -117,6 +117,10 @@ envx pull <project-id>
 # Downloads decrypted .env to local machine
 ```
 
+### Web Dashboard and Frontend
+
+- https://envx-sync.up.railway.app
+
 ---
 
 ## CLI Commands Reference
@@ -294,9 +298,12 @@ npm run dev
 ## Security & Privacy
 
 ### Encryption
-- All secrets encrypted with AES-256-GCM
-- Encryption keys never leave your auth context
-- Zero-knowledge architecture (we can't read your secrets)
+
+- Secrets are encrypted at rest using AES-256-GCM
+- All communication occurs over HTTPS/TLS
+- Access is restricted to authorized project members
+- Secrets are decrypted only when requested by authenticated users
+- We are actively improving our encryption and key-management architecture
 
 ### Access Control
 - Only invited team members can view project secrets
