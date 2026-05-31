@@ -386,8 +386,6 @@ A team of developers tired of `.env` chaos. We built envx to solve the problems 
 
 <div align="center">
 
-**[⭐ Star us on GitHub](https://github.com/yourusername/envx-cli-tmr)** if you find envx useful!
-
-[Website](https://envx.dev) · [Docs](https://envx.dev/docs) · [Discord](https://discord.gg/envx) · [Twitter](https://twitter.com/envx)
+**[⭐ Star us on GitHub](https://github.com/TMR2005/envx-sync)** if you find envx useful!
 
 </div>
