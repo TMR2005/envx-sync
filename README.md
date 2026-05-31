@@ -317,7 +317,7 @@ npm run dev
 - [x] Core CLI (login, create, push, pull, invite, join)
 - [x] GitHub OAuth
 - [x] AES-256 encryption
-- [ ] Web dashboard
+- [x] Web dashboard
 - [ ] Audit logs
 
 ### Q2 2025
@@ -331,35 +331,6 @@ npm run dev
 - [ ] Kubernetes secrets sync
 - [ ] GitHub Actions integration
 - [ ] Team billing dashboard
-
----
-
-## Contributing
-
-We love contributions! Here's how:
-
-1. **Fork** the repository
-2. **Create a feature branch** (`git checkout -b feature/my-feature`)
-3. **Commit your changes** (`git commit -am 'Add my feature'`)
-4. **Push to your branch** (`git push origin feature/my-feature`)
-5. **Open a Pull Request**
-
-### Local Development
-
-```bash
-# Clone the repo
-git clone https://github.com/yourusername/envx-cli-tmr.git
-cd envx-cli-tmr
-
-# Install dependencies
-npm install
-
-# Run in development
-npm run dev
-
-# Run tests
-npm test
-```
 
 ---
 
@@ -392,15 +363,6 @@ envx invite <project-id> your_github_username
 
 ---
 
-## Support
-
-- **Docs:** [envx.dev/docs](https://envx.dev/docs)
-- **Discord:** [join our community](https://discord.gg/envx)
-- **Email:** support@envx.dev
-- **GitHub Issues:** [Report bugs](https://github.com/yourusername/envx-cli-tmr/issues)
-
----
-
 ## License
 
 MIT License — see [LICENSE](./LICENSE) for details.
@@ -411,7 +373,7 @@ MIT License — see [LICENSE](./LICENSE) for details.
 
 A team of developers tired of `.env` chaos. We built envx to solve the problems we had.
 
-**Questions?** Reach out at founders@envx.dev
+**Questions?** Reach out at praveentmr2005@gmail.com
 
 ---
 
