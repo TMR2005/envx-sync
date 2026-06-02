@@ -1,66 +1,36 @@
 # envx
 
-**Environment synchronization for teams. Git-native, zero friction, built for speed.**
-
-Manage team secrets and environment variables across projects without the bloat of traditional tools. Onboard a developer in 2 minutes. Share secrets securely. Never manually share `.env` files again.
+> Environment synchronization for teams. Git-native, zero friction, built for speed.
 
 ---
 
-## Why envx?
-
-**The problem:** Sharing `.env` files is chaos. Asana/Linear setup takes 30+ minutes. Teams end up with:
-- Outdated secrets scattered across Slack messages
-- Manual `.env` file sharing (security nightmare)
-- Zero audit trail
-- New devs waiting hours for onboarding
-
-**The envx solution:**
-- **2-minute onboarding** — one GitHub username, one invite
-- **Git-native** — SSH keys, no new auth system to manage
-- **Unlimited projects & users** — scale without friction
-- **Secure by default** — encrypted storage, audit logs
-- **CLI-first** — built for developers, by developers
+Sharing `.env` files over Slack is a security incident waiting to happen. Manual onboarding takes hours. Secrets go stale. `envx` eliminates all of it — encrypted secret management with two-minute developer onboarding, powered by the GitHub accounts your team already has.
 
 ---
 
-## Features
+## Contents
 
-### 🚀 Speed
-- Onboard a developer in **under 2 minutes**
-- No configuration bloat, no permission matrices
-- One command to sync secrets across your team
-
-### 🔐 Security
-- End-to-end encryption for stored secrets
-- Git-based authentication (SSH keys)
-- No password management overhead
-- Encrypted at rest, encrypted in transit
-
-### 🌳 Scale
-- Unlimited projects and team members
-- No seat licenses or usage limits
-- Each project can have its own team
-- Built for growing startups (5-500 people)
-
-### 📦 Multi-project
-- Manage secrets for frontend, backend, infra, and more
-- Separate teams per project
-- Easy project switching with CLI
-
-### 💼 Team-ready
-- Invite collaborators with a single command
-- Role-based access (coming soon)
-- Full audit trail of who accessed what, when
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [CLI Reference](#cli-reference)
+- [Architecture](#architecture)
+- [Security](#security)
+- [Roadmap](#roadmap)
+- [Troubleshooting](#troubleshooting)
 
 ---
 
-## Quick Start
-
-### Installation
+## Installation
 
 ```bash
 npm install -g envx-cli-tmr
 ```
+
+Requires Node.js. No additional dependencies.
+
+---
+
+## Quick Start
 
 ### 1. Authenticate
 
@@ -68,67 +38,54 @@ npm install -g envx-cli-tmr
 envx login
 ```
 
-Opens your browser for GitHub OAuth. One click, you're authenticated.
+Opens GitHub OAuth in your browser. Authentication uses your existing GitHub account — no new credentials to manage.
 
 ### 2. Create a project
 
 ```bash
 envx create
-# Follow the prompt: enter your project name
-# Returns: Project ID
+# Prompts for a project name
 ```
 
-### 3. Initialize `.env.example`
+### 3. Push your secrets
+
+Add variables to your local `.env` file, then upload:
 
 ```bash
-envx init <project-id>
-# Creates .env.example with secret keys (no values)
+envx push
+# Select from a dropdown of your projects
 ```
 
-### 4. Add your secrets
-
-Edit `.env` locally:
+### 4. Invite a teammate
 
 ```bash
-DB_URL=postgresql://...
-API_KEY=sk-...
-WEBHOOK_SECRET=whsec_...
+envx invite <github-username>
+# Invite sent — no tokens to copy or share
 ```
 
-### 5. Push to the cloud
+### 5. Teammate accepts and pulls
 
 ```bash
-envx push <project-id>
-# Uploads .env, encrypts, stores in cloud
+# Teammate runs:
+envx join
+# Shows a dropdown of pending invites — select to accept
+
+envx pull
+# Select the project from a dropdown
+# .env is populated with all secrets
 ```
 
-### 6. Invite your team
-
-```bash
-envx invite <project-id> john
-# Generates an invite token
-# Share with john → he runs: envx join <token>
-```
-
-### 7. Team pulls secrets
-
-```bash
-envx pull <project-id>
-# Downloads decrypted .env to local machine
-```
-
-### Web Dashboard and Frontend
-
-- https://envx-sync.up.railway.app
+Total time from zero to running: under two minutes.
 
 ---
 
-## CLI Commands Reference
+## CLI Reference
 
 ### Authentication
 
 #### `envx login`
-Authenticate via GitHub OAuth. Saves token locally.
+
+Authenticate via GitHub OAuth. Credentials are stored locally.
 
 ```bash
 envx login
@@ -139,198 +96,146 @@ envx login
 ### Projects
 
 #### `envx create`
-Create a new project. Returns project ID for future commands.
+
+Create a new project.
 
 ```bash
 envx create
-# Prompts for project name
+# Prompts for a project name
 ```
 
-#### `envx projects [name-or-id]`
-List all your projects, or select one by name/ID.
+#### `envx projects`
+
+List all projects you have access to. Presents an interactive dropdown to select one.
 
 ```bash
 envx projects
-# Shows dropdown of your projects
-
-envx projects "My API"
-# Selects project by name
 ```
 
 ---
 
 ### Secrets Management
 
-#### `envx push [project-id]`
-Upload `.env` file to cloud. Encrypts and stores securely.
+All secrets commands present an interactive project dropdown if no project is pre-selected.
+
+#### `envx push`
+
+Upload your local `.env` file. Encrypted server-side before storage.
 
 ```bash
 envx push
-# Prompts for project if not provided
-
-envx push abc123
-# Push to specific project
+# Select project from dropdown
 ```
 
-#### `envx pull [project-id]`
-Download decrypted secrets as `.env` file.
+#### `envx pull`
+
+Download decrypted secrets as a `.env` file in your current directory.
 
 ```bash
 envx pull
-# Prompts for project if not provided
-
-envx pull abc123
-# Pull from specific project
+# Select project from dropdown
 ```
 
-#### `envx init [project-id]`
-Generate `.env.example` template from remote secrets (keys only, no values).
+#### `envx init`
+
+Generate a `.env.example` template containing only variable keys — no values. Safe to commit to version control.
 
 ```bash
 envx init
-# Prompts for project if not provided
-
-envx init abc123
-# Initialize .env.example for specific project
+# Select project from dropdown
 ```
 
 ---
 
-### Team Invitations
+### Team Management
 
-#### `envx invite <project-id> [username]`
-Invite a team member to a project via GitHub username.
+#### `envx invite <github-username>`
+
+Invite a teammate by their GitHub username. No token exchange required — the invite is sent server-side and appears in their `envx join` queue.
 
 ```bash
-envx invite abc123 john
-# Generates invite token for @john
-
-envx invite abc123
-# Prompts for username
+envx invite john
 ```
 
-#### `envx join [invite-token]`
-Accept an invite and join a project.
+#### `envx join`
+
+Shows a dropdown of all pending invites addressed to you. Select one to accept and gain project access.
 
 ```bash
-envx join invt_abc123xyz
-# Joins project with specific token
-
 envx join
-# Shows list of pending invites
-# Select to accept
 ```
-
----
-
-## Workflow Example
-
-### Founder onboards dev
-
-**Founder:**
-```bash
-envx login
-envx create
-# Project "Backend API" created: project_abc123
-
-# Add secrets to local .env
-envx push project_abc123
-
-# Invite john
-envx invite project_abc123 john
-# → Returns invite token
-# Shares token with John in Slack
-```
-
-**John (new dev):**
-```bash
-envx login
-envx join invt_abc123xyz
-
-# Secrets already available, ready to develop
-envx pull project_abc123
-# .env file now has all secrets
-
-npm run dev
-# All environment variables loaded from .env
-```
-
-**Time spent:** ~90 seconds. ✅
 
 ---
 
 ## Architecture
 
-### How it works
+```
+Developer Machine         envx Cloud              Teammate Machine
+─────────────────         ──────────              ────────────────
+.env
+  │
+  ▼
+HTTPS / TLS 1.3 ────────► AES-256-GCM encrypt ──► Decrypt on pull
+                                  │
+                           Master key (env)
+                           Access control
+                           Audit log
+```
 
-1. **Authentication** — GitHub OAuth via SSH keys
-2. **Secret Storage** — AES-256 encryption at rest
-3. **Distribution** — HTTPS + TLS in transit
-4. **Access Control** — Project-based team membership
+**Authentication** — GitHub OAuth. No proprietary identity system. Your team's existing GitHub accounts are the source of truth.
 
-### Encryption
+**Encryption** — All secrets are encrypted at rest using AES-256-GCM with a master key stored outside the server in environment configuration. No plaintext secrets are persisted at any layer.
 
-- **At rest:** AES-256-GCM encryption using project-specific keys
-- **In transit:** TLS 1.3 (HTTPS only)
-- **Keys:** Derived from GitHub authentication, never stored plaintext
+**Encryption in transit** — TLS 1.3. HTTPS only.
 
-### No vendor lock-in
+**Access control** — Project-scoped membership. Access to one project does not grant access to any other.
 
-- Secrets are always encrypted with keys you control
-- Can export secrets anytime
-- GitHub-based auth (no proprietary password system)
-
----
-
-## Comparison
-
-| Feature | envx | Asana | Linear | Vercel Env |
-|---------|------|-------|--------|-----------|
-| **Onboarding time** | 2 min | 30 min | 25 min | 10 min |
-| **Cost for <10 people** | Free | $85/mo | $98/mo | $0 |
-| **Unlimited projects** | ✅ | ❌ | ❌ | ✅ |
-| **CLI-first** | ✅ | ❌ | ❌ | ❌ |
-| **Git-native** | ✅ | ❌ | ❌ | ✅ |
-| **Local .env support** | ✅ | ❌ | ❌ | ❌ |
+**Audit log** — Every secret access is recorded with user identity and timestamp.
 
 ---
 
-## Security & Privacy
+## Security
 
-### Encryption
+| Property | Detail |
+|----------|--------|
+| Encryption at rest | AES-256-GCM |
+| Key storage | Master key in environment config, outside the server |
+| Encryption in transit | TLS 1.3 |
+| Authentication | GitHub OAuth |
+| Access scope | Per-project, no cross-project leakage |
+| Plaintext storage | Never |
+| Audit logging | Full access log — who pulled what, and when |
+| Compliance | GDPR compliant; SOC 2 Type II in progress |
 
-- Secrets are encrypted at rest using AES-256-GCM
-- All communication occurs over HTTPS/TLS
-- Access is restricted to authorized project members
-- Secrets are decrypted only when requested by authenticated users
-- We are actively improving our encryption and key-management architecture
+Secrets are decrypted only upon request by an authenticated, authorized project member.
 
-### Access Control
-- Only invited team members can view project secrets
-- Project-scoped permissions (no cross-project leakage)
-- Audit log for all secret access (coming soon)
+Security disclosures: praveentmr2005@gmail.com
 
-### Compliance
-- HTTPS-only communication
-- No unencrypted storage
-- GDPR compliant
-- SOC 2 Type II certified (coming Q2 2025)
+---
+
+## Web Dashboard
+
+A browser-based interface is available alongside the CLI:
+
+```
+https://envx-sync.up.railway.app
+```
 
 ---
 
 ## Roadmap
 
 ### Q1 2025
-- [x] Core CLI (login, create, push, pull, invite, join)
+- [x] Core CLI — `login`, `create`, `push`, `pull`, `invite`, `join`
 - [x] GitHub OAuth
 - [x] AES-256 encryption
 - [x] Web dashboard
-- [ ] Audit logs
+- [x] Audit logs
 
 ### Q2 2025
 - [ ] Role-based access control (admin, viewer, editor)
-- [ ] Secret versioning & rollback
-- [ ] Slack/Discord notifications
+- [ ] Secret versioning and rollback
+- [ ] Slack and Discord notifications
 - [ ] Environment-specific secrets (dev, staging, prod)
 
 ### Q3 2025
@@ -343,49 +248,46 @@ npm run dev
 
 ## Troubleshooting
 
-### "No .env file found"
-You need to create a `.env` file before pushing. Create one in your project root:
+**"No .env file found"**
+
+A `.env` file must exist in your working directory before pushing:
+
 ```bash
 echo "API_KEY=your_key_here" > .env
 ```
 
-### "Login failed"
-Make sure port 5544 is available (used for OAuth callback). Check:
+**"Login failed"**
+
+The OAuth callback uses port `5544`. Ensure it is available:
+
 ```bash
-lsof -i :5544  # macOS/Linux
-netstat -ano | findstr :5544  # Windows
+# macOS / Linux
+lsof -i :5544
+
+# Windows
+netstat -ano | findstr :5544
 ```
 
-### "Project not found"
-Verify the project ID is correct. List your projects:
+**"Permission denied"**
+
+You have not been invited to this project. Ask the project owner to run:
+
 ```bash
-envx projects
+envx invite <your-github-username>
 ```
 
-### "Permission denied"
-You might not be invited to this project. Ask the project owner to run:
-```bash
-envx invite <project-id> your_github_username
-```
+---
+
+## Contributing
+
+Issues and pull requests are welcome on the [GitHub repository](https://github.com/TMR2005/envx-sync).
 
 ---
 
 ## License
 
-MIT License — see [LICENSE](./LICENSE) for details.
+MIT — see [LICENSE](./LICENSE) for full terms.
 
 ---
 
-## Built by
-
-A team of developers tired of `.env` chaos. We built envx to solve the problems we had.
-
-**Questions?** Reach out at praveentmr2005@gmail.com
-
----
-
-<div align="center">
-
-**[⭐ Star us on GitHub](https://github.com/TMR2005/envx-sync)** if you find envx useful!
-
-</div>
+Built by developers who got tired of the `.env` problem. Questions: praveentmr2005@gmail.com
